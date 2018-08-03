@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var images = ["cat", "cat in box", "cat lady"];
+
+            function showButtons() {
+                $("#buttons").empty();
+                for (var i = 0; i < images.length; i++) {
+                    var newBtn =$("<button>");
+                    newBtn.text(images[i]);
+                    newBtn.attr("data-value", images[i]);
+                    newBtn.addClass("btn");
+                    $("#buttons").append(newBtn);
+
+                }
+            }
+            $("#submit").on("click", function(){
+
+                var inputValue=$("#newButton").val();
+                console.log(inputValue);
+                images.push(inputValue);
+                $("#newButton").val(""); //Clear text from input.
+                showButtons();
+            })
+
+            $("#buttons").on("click", ".btn", function(){
+                var thisGif= $(this).attr("data-value");
+                // var thisGifChecked = thisGif.trim(); we are going to add this to our button creation function
+                var thisGifSpaceCheck = thisGif.replace(' ', '+');
+                for(var i=0; i<thisGifSpaceCheck.length; i++){
+                    thisGifSpaceCheck=thisGifSpaceCheck.replace(' ', '+');
+                }
+                console.log(thisGifSpaceCheck);
+
+                var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=ppgor8xfGy45uEtL9KoAQO6LR4nayk7O&q=" + thisGif + "&limit=10";
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                })
+                .then(function(gifInfo){
+                    console.log(gifInfo);
+
+                    for(var i=0; i<10; i++){
+                    var movingImageURL=gifInfo.data[i].images.fixed_height.url;
+                    var fixedImageURL=gifInfo.data[i].images.fixed_height_still.url;
+                    var $image = $("<img>");
+                    $image.attr("data-state", "fixed");
+                    $image.attr("data-fixed-url", fixedImageURL);
+                    $image.attr("data-moving-url", movingImageURL);
+                    $image.attr("src", fixedImageURL);
+
+                    var $gifDiv = $("<div>");
+                    $gifDiv.prepend($image);
+                    $("#gifs").prepend($gifDiv);
+                    }
+                })
+            })
+
+            $("#gifs").on("click", "img", function(){
+                var currentState = $(this).attr("data-state");
+
+                if (currentState === "fixed"){
+                    $(this).attr("src", $(this).attr("data-moving-url"));
+                    $(this).attr("data-state", "moving");
+                }else{
+                    $(this).attr("src", $(this).attr("data-fixed-url"));
+                    $(this).attr("data-state", "fixed");
+                }
+            })
+
+            showButtons();
+        })
+    </script>
+</head>
+
+<body>
+    <div id="buttons"></div>
+    <input id="newButton" type="text">
+    <input id="submit" type="submit">
+    <!-- <button id="submit">Submit</button> -->
+    <div id="gifs"></div>
+</body>
+
+</html>
