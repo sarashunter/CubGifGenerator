@@ -1,7 +1,8 @@
 
 $(document).ready(function () {
-    var images = ["Joe Maddon", "Javier Baez", "Cubs", "Cubs Win", "Jason Heyward", "Jon Lester", "Addison Russell", "Anthony Rizzo", "Kris Bryant", "Kyle Hendricks", "Albert Almora", "Ben Zobrist", "Wilson Contreras", "Kyle Schwarber", "David Bote", "Wrigley Field"];
+    var images = ["Joe Maddon", "Javier Baez", "Cubs", "Cubs Win", "Jason Heyward", "Jon Lester", "Addison Russell", "Anthony Rizzo", "Kris Bryant", "Kyle Hendricks", "Albert Almora", "Ben Zobrist", "Wilson Contreras", "Kyle Schwarber", "David Bote", "Wrigley Field", "Yu Darvish", "Tyler Chatwood", "Ian Happ", "Brandon Morrow", "Pedro Strop", "Carl Edwards Jr", "Jose Quintana", "Victor Caratini", "Tommy La Stella", "Randy Rosario"];
     var imagesOffset = [];
+    var favorites = [];
 
     for (var i = 0; i < images.length; i++) {
         imagesOffset[i] = 0;
@@ -77,15 +78,34 @@ $(document).ready(function () {
                     $gifRating.addClass("card-text");
                     $gifRating.text("Rated: " + gifInfo.data[i].rating.toUpperCase());
 
+                    var $favButton = $("<button>");
+                    $favButton.addClass("btn btn-secondary fav");
+                    $favButton.text("Add to favorites");
+
                     $gifDiv.addClass("gifDiv card");
                     $gifDiv.prepend($image);
                     $gifCaption.html($gifTitle);
                     $gifCaption.append($gifRating);
+                    $gifCaption.append($favButton);
                     $gifDiv.append($gifCaption);
                     $("#gifs").prepend($gifDiv);
 
                 }
             })
+    })
+
+    $("#showFavs").on("click", function(){
+        $("#gifs").empty();
+        favorites.forEach(function(element){
+            $("#gifs").append(element);
+        })
+    })
+
+    $("#gifs").on("click", ".fav", function(){
+        favorites.push($(this).parent().parent());
+        console.log(favorites);
+
+
     })
 
     $("#gifs").on("click", "img", function () {
