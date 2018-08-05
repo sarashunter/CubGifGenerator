@@ -4,6 +4,13 @@ $(document).ready(function () {
     var imagesOffset = [];
     var favorites = [];
 
+    storedObject = localStorage.getItem("cubsGifs");
+    if (storedObject !== null){
+        storedObjectParsed=JSON.parse(storedObject);
+        images = storedObjectParsed.buttons;
+        // favorites = storedObjectParsed.favorites;
+    }
+
     for (var i = 0; i < images.length; i++) {
         imagesOffset[i] = 0;
     }
@@ -27,6 +34,7 @@ $(document).ready(function () {
         console.log(inputValue);
         images.push(inputValue);
         imagesOffset.push(0);
+        storeIt();
         $("#newButton").val(""); //Clear text from input.
         showButtons();
     })
@@ -65,6 +73,7 @@ $(document).ready(function () {
                     $image.attr("data-moving-url", movingImageURL);
                     $image.attr("src", fixedImageURL);
                     $image.addClass("card-img-top");
+                    $image.attr("alt", "Gif of " + thisGif);
 
 
 
@@ -92,18 +101,21 @@ $(document).ready(function () {
 
                 }
             })
+
     })
 
-    $("#showFavs").on("click", function(){
+    $("#showFavs").on("click", function () {
         $("#gifs").empty();
-        favorites.forEach(function(element){
+        favorites.forEach(function (element) {
             $("#gifs").append(element);
         })
     })
 
-    $("#gifs").on("click", ".fav", function(){
+    //Add to favorites array when button is pressed.
+    $("#gifs").on("click", ".fav", function () {
         favorites.push($(this).parent().parent());
         console.log(favorites);
+        storeIt();
 
 
     })
@@ -120,5 +132,15 @@ $(document).ready(function () {
         }
     })
 
+    function storeIt(){
+        var jsonobject = {
+            buttons: images,
+            favorites: favorites
+        }
+        localStorage.setItem("cubsGifs", JSON.stringify(jsonobject));
+
+    }
+
     showButtons();
+    
 })
