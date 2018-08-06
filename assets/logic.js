@@ -4,20 +4,33 @@ $(document).ready(function () {
     var topicsOffset = [];
     var favorites = [];
 
+    //Get JSON object from local storage.
     storedObject = localStorage.getItem("cubsGifs");
+
+    //Check if there is a JSON object in local storage.
     if (storedObject !== null) {
+
         storedObjectParsed = JSON.parse(storedObject);
+        //Get topics from local storage.
+
         topics = storedObjectParsed.buttons;
         // favorites = storedObjectParsed.favorites;
+
     }
 
     for (var i = 0; i < topics.length; i++) {
+
+        //Create an array that keeps track of how many times a topic has been requested so you can get the next 10 instead of getting the same ones again.
         topicsOffset[i] = 0;
+
     }
 
+    //Creates a button for each topic.
     function showButtons() {
         $("#buttons").empty();
+
         for (var i = 0; i < topics.length; i++) {
+
             var newBtn = $("<button>");
             newBtn.text(topics[i]);
             newBtn.attr("data-value", topics[i]);
@@ -27,32 +40,47 @@ $(document).ready(function () {
             $("#buttons").append(newBtn);
 
         }
+
     }
+
+    //Handles when a user adds a new topic.
     $("#submit").on("click", function () {
 
-        var inputValue = $("#newButton").val();
+        var inputValue = $("#newButton").val().trim();
         console.log(inputValue);
         topics.push(inputValue);
-        topicsOffset.push(0);
-        storeIt();
-        $("#newButton").val(""); //Clear text from input.
-        showButtons();
+
+        //Add item in offset array
+        topicsOffset.push(0); 
+
+        //Store new JSON object in localStorage.
+        storeIt(); 
+
+        //Clear text from input box.
+        $("#newButton").val(""); 
+
+        //Show buttons with new topic.
+        showButtons(); 
     })
 
+    //This function uses Ajax call to generate the gifs.
     $("#buttons").on("click", ".btn", function () {
+
         var thisGif = $(this).attr("data-value");
-        // var thisGifChecked = thisGif.trim(); we are going to add this to our button creation function
+
         var thisGifSpaceCheck = thisGif.replace(' ', '+');
 
         //This checks for spaces throughout the length of the gif word.
         for (var i = 0; i < thisGifSpaceCheck.length; i++) {
+
             thisGifSpaceCheck = thisGifSpaceCheck.replace(' ', '+');
+
         }
-        console.log(thisGifSpaceCheck);
 
         thisGifOffset = $(this).attr("data-offset")
         var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=ppgor8xfGy45uEtL9KoAQO6LR4nayk7O&q=" + thisGif + "&limit=10&offset=" + thisGifOffset;
 
+        //Increase offset
         $(this).attr("data-offset", parseInt(thisGifOffset) + 10);
 
         $.ajax({
@@ -75,11 +103,12 @@ $(document).ready(function () {
                     $image.addClass("card-img-top");
                     $image.attr("alt", "Gif of " + thisGif);
 
-
-
                     var $gifDiv = $("<div>");
+                    $gifDiv.addClass("gifDiv card");
+
                     var $gifCaption = $("<div>");
                     $gifCaption.addClass("card-body");
+
                     var $gifTitle = $("<h5>");
                     $gifTitle.text(thisGif);
 
@@ -91,7 +120,6 @@ $(document).ready(function () {
                     $favButton.addClass("btn btn-secondary fav");
                     $favButton.text("Add to favorites");
 
-                    $gifDiv.addClass("gifDiv card");
                     $gifDiv.prepend($image);
                     $gifCaption.html($gifTitle);
                     $gifCaption.append($gifRating);
@@ -104,6 +132,7 @@ $(document).ready(function () {
 
     })
 
+    //This doesn't work with local storage currently.  It's just favorites from this session.
     $("#showFavs").on("click", function () {
         $("#gifs").empty();
         favorites.forEach(function (element) {
@@ -120,6 +149,7 @@ $(document).ready(function () {
 
     })
 
+    //Function that allows gifs to "pause"
     $("#gifs").on("click", "img", function () {
         var currentState = $(this).attr("data-state");
 
@@ -132,7 +162,9 @@ $(document).ready(function () {
         }
     })
 
+    //Function used to add JSON to local storage.
     function storeIt() {
+        
         var jsonobject = {
             buttons: topics,
             favorites: favorites
