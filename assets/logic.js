@@ -1,27 +1,27 @@
 
 $(document).ready(function () {
-    var images = ["Joe Maddon", "Javier Baez", "Cubs", "Cubs Win", "Jason Heyward", "Jon Lester", "Addison Russell", "Anthony Rizzo", "Kris Bryant", "Kyle Hendricks", "Albert Almora", "Ben Zobrist", "Wilson Contreras", "Kyle Schwarber", "David Bote", "Wrigley Field", "Yu Darvish", "Tyler Chatwood", "Ian Happ", "Brandon Morrow", "Pedro Strop", "Carl Edwards Jr", "Jose Quintana", "Victor Caratini", "Tommy La Stella", "Randy Rosario"];
-    var imagesOffset = [];
+    var topics = ["Joe Maddon", "Javier Baez", "Cubs", "Cubs Win", "Jason Heyward", "Jon Lester", "Addison Russell", "Anthony Rizzo", "Kris Bryant", "Kyle Hendricks", "Albert Almora", "Ben Zobrist", "Wilson Contreras", "Kyle Schwarber", "David Bote", "Wrigley Field", "Yu Darvish", "Tyler Chatwood", "Ian Happ", "Brandon Morrow", "Pedro Strop", "Carl Edwards Jr", "Jose Quintana", "Victor Caratini", "Tommy La Stella", "Randy Rosario"];
+    var topicsOffset = [];
     var favorites = [];
 
     storedObject = localStorage.getItem("cubsGifs");
-    if (storedObject !== null){
-        storedObjectParsed=JSON.parse(storedObject);
-        images = storedObjectParsed.buttons;
+    if (storedObject !== null) {
+        storedObjectParsed = JSON.parse(storedObject);
+        topics = storedObjectParsed.buttons;
         // favorites = storedObjectParsed.favorites;
     }
 
-    for (var i = 0; i < images.length; i++) {
-        imagesOffset[i] = 0;
+    for (var i = 0; i < topics.length; i++) {
+        topicsOffset[i] = 0;
     }
 
     function showButtons() {
         $("#buttons").empty();
-        for (var i = 0; i < images.length; i++) {
+        for (var i = 0; i < topics.length; i++) {
             var newBtn = $("<button>");
-            newBtn.text(images[i]);
-            newBtn.attr("data-value", images[i]);
-            newBtn.attr("data-offset", imagesOffset[i]);
+            newBtn.text(topics[i]);
+            newBtn.attr("data-value", topics[i]);
+            newBtn.attr("data-offset", topicsOffset[i]);
             newBtn.attr("type", "button");
             newBtn.addClass("btn btn-primary");
             $("#buttons").append(newBtn);
@@ -32,8 +32,8 @@ $(document).ready(function () {
 
         var inputValue = $("#newButton").val();
         console.log(inputValue);
-        images.push(inputValue);
-        imagesOffset.push(0);
+        topics.push(inputValue);
+        topicsOffset.push(0);
         storeIt();
         $("#newButton").val(""); //Clear text from input.
         showButtons();
@@ -132,9 +132,9 @@ $(document).ready(function () {
         }
     })
 
-    function storeIt(){
+    function storeIt() {
         var jsonobject = {
-            buttons: images,
+            buttons: topics,
             favorites: favorites
         }
         localStorage.setItem("cubsGifs", JSON.stringify(jsonobject));
@@ -142,5 +142,5 @@ $(document).ready(function () {
     }
 
     showButtons();
-    
+
 })
