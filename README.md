@@ -1,4 +1,4 @@
-# Giftastic
+# Cub Gif Generator
 Assignment 6 for UNC Charlotte Full Stack Development class.
 
 ## Description
